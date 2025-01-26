@@ -189,7 +189,13 @@ static double GetNominalCPUFrequency() {
 // and the memory location pointed to by value is set to the value read.
 static bool ReadLongFromFile(const char *file, long *value) {
   bool ret = false;
-  int fd = open(file, O_RDONLY | O_CLOEXEC);
+#if defined(_POSIX_C_SOURCE) && !defined(__MVS__)
+  const int file_mode = (O_RDONLY | O_CLOEXEC);
+#else
+  const int file_mode = O_RDONLY;
+#endif
+
+  int fd = open(file, file_mode);
   if (fd != -1) {
     char line[1024];
     char *err;
@@ -412,6 +418,12 @@ pid_t GetTID() {
   uint32_t tid;
   rtems_task_ident(RTEMS_SELF, 0, &tid);
   return tid;
+}
+
+#elif defined(__MVS__)
+
+pid_t GetTID() {
+  return reinterpret_cast<pid_t>((int)pthread_self().__);
 }
 
 #else

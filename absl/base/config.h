@@ -305,6 +305,7 @@ static_assert(ABSL_INTERNAL_INLINE_NAMESPACE_STR[0] != 'h' ||
     !(TARGET_OS_IPHONE && __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_9_0)
 #define ABSL_HAVE_THREAD_LOCAL 1
 #endif
+#elif defined(__MVS__)
 #else  // !defined(__APPLE__)
 #define ABSL_HAVE_THREAD_LOCAL 1
 #endif
